@@ -1,0 +1,13 @@
+name: Screenshot your application
+
+on:
+  push:
+    tags:
+      '*'
+
+jobs:
+  fx:
+    name: Screenshot your application
+    permissions:
+      contents: write
+    uses: ProjetPrograInfo/project_template/.github/workflows/screenshot.yaml@main
