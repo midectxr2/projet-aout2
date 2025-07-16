@@ -36,4 +36,8 @@ public class GameMap {
             p.growShips();
         }
     }
+
+    public void removeFleetsByPlayer(int playerId) {
+        fleets.removeIf(fleet -> fleet.getOwnerId() == playerId);
+    }
 }

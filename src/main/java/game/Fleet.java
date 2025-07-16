@@ -10,6 +10,10 @@ public class Fleet {
     private int shipCount;
 
 
+    public int getOwnerId() {
+        return ownerId;
+    }
+
     /**
      * Crée une nouvelle flotte.
      * @param source planète de départ

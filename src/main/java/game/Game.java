@@ -57,4 +57,36 @@ public class Game {
     public List<Player> getPlayers() {
         return players;
     }
+
+    public boolean isGameOver() {
+        int alive = 0;
+        for (Player p : players) {
+            if (!p.getOwnedPlanets().isEmpty()) {
+                alive++;
+            }
+        }
+        return alive <= 1;
+    }
+
+    public Player getWinner() {
+        for (Player p : players) {
+            if (!p.getOwnedPlanets().isEmpty()) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public void eliminateDefeatedPlayers() {
+        for (Player p : players) {
+            if (p.getOwnedPlanets().isEmpty()) {
+                // Annuler les flottes en cours de ce joueur
+                map.removeFleetsByPlayer(p.getId());
+                System.out.println("Le joueur " + p.getId() + " a été éliminé.");
+            }
+        }
+    }
+
+
+
 }
