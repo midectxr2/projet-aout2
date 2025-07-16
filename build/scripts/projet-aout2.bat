@@ -19,7 +19,7 @@
 @if "%DEBUG%"=="" @echo off
 @rem ##########################################################################
 @rem
-@rem  projet-progra-aout-25-midectxr2 startup script for Windows
+@rem  projet-aout2 startup script for Windows
 @rem
 @rem ##########################################################################
 
@@ -35,7 +35,7 @@ set APP_HOME=%DIRNAME%..
 @rem Resolve any "." and ".." in APP_HOME to make it shorter.
 for %%i in ("%APP_HOME%") do set APP_HOME=%%~fi
 
-@rem Add default JVM options here. You can also use JAVA_OPTS and PROJET_PROGRA_AOUT_25_MIDECTXR2_OPTS to pass JVM options to this script.
+@rem Add default JVM options here. You can also use JAVA_OPTS and PROJET_AOUT2_OPTS to pass JVM options to this script.
 set DEFAULT_JVM_OPTS=
 
 @rem Find java.exe
@@ -70,22 +70,22 @@ goto fail
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\projet-progra-aout-25-midectxr2.jar;%APP_HOME%\lib\javafx-controls-12.0.1-win.jar;%APP_HOME%\lib\javafx-graphics-12.0.1-win.jar;%APP_HOME%\lib\javafx-graphics-12.0.1.jar;%APP_HOME%\lib\javafx-base-12.0.1-win.jar;%APP_HOME%\lib\javafx-base-12.0.1.jar
+set CLASSPATH=%APP_HOME%\lib\projet-aout2.jar;%APP_HOME%\lib\javafx-controls-12.0.1-win.jar;%APP_HOME%\lib\javafx-graphics-12.0.1-win.jar;%APP_HOME%\lib\javafx-graphics-12.0.1.jar;%APP_HOME%\lib\javafx-base-12.0.1-win.jar;%APP_HOME%\lib\javafx-base-12.0.1.jar
 
 
-@rem Execute projet-progra-aout-25-midectxr2
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %PROJET_PROGRA_AOUT_25_MIDECTXR2_OPTS%  -classpath "%CLASSPATH%" game.Main %*
+@rem Execute projet-aout2
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %PROJET_AOUT2_OPTS%  -classpath "%CLASSPATH%" game.Main %*
 
 :end
 @rem End local scope for the variables with windows NT shell
 if %ERRORLEVEL% equ 0 goto mainEnd
 
 :fail
-rem Set variable PROJET_PROGRA_AOUT_25_MIDECTXR2_EXIT_CONSOLE if you need the _script_ return code instead of
+rem Set variable PROJET_AOUT2_EXIT_CONSOLE if you need the _script_ return code instead of
 rem the _cmd.exe /c_ return code!
 set EXIT_CODE=%ERRORLEVEL%
 if %EXIT_CODE% equ 0 set EXIT_CODE=1
-if not ""=="%PROJET_PROGRA_AOUT_25_MIDECTXR2_EXIT_CONSOLE%" exit %EXIT_CODE%
+if not ""=="%PROJET_AOUT2_EXIT_CONSOLE%" exit %EXIT_CODE%
 exit /b %EXIT_CODE%
 
 :mainEnd
