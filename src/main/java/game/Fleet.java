@@ -1,70 +1,94 @@
 package game;
+
 /**
- * Représente une flotte de vaisseaux en déplacement entre deux planètes.
+ * Représente une flotte de vaisseaux en déplacement d'une planète source vers une planète cible.
+ * Une flotte avance à chaque tour selon une vitesse donnée, et applique son effet en arrivant à destination.
  */
 public class Fleet {
     private Planet source;
-    private Planet destination;
-    private double remainingDistance;
+    private Planet target;
     private int ownerId;
-    private int shipCount;
-
-
-    public int getOwnerId() {
-        return ownerId;
-    }
+    private double ships;
+    private double x, y;
+    private double dx, dy;
+    private double distanceRemaining;
 
     /**
-     * Crée une nouvelle flotte.
-     * @param source planète de départ
-     * @param destination planète cible
-     * @param ownerId identifiant du joueur propriétaire
-     * @param shipCount nombre de vaisseaux
+     * Crée une flotte à partir d'une planète source et à destination d'une planète cible.
+     * La flotte est initialisée à la position de la source et suit une trajectoire droite.
+     *
+     * @param source    la planète de départ
+     * @param target    la planète cible
+     * @param ownerId   l'identifiant du joueur propriétaire de la flotte
+     * @param ships     le nombre de vaisseaux transportés
      */
-    public Fleet(Planet source, Planet destination, int ownerId, int shipCount) {
+    public Fleet(Planet source, Planet target, int ownerId, double ships) {
         this.source = source;
-        this.destination = destination;
+        this.target = target;
         this.ownerId = ownerId;
-        this.shipCount = shipCount;
-        this.remainingDistance = calculateDistance();
+        this.ships = ships;
+        this.x = source.getX();
+        this.y = source.getY();
+
+        double totalDistance = distance(source.getX(), source.getY(), target.getX(), target.getY());
+        this.distanceRemaining = totalDistance;
+
+        double dirX = target.getX() - source.getX();
+        double dirY = target.getY() - source.getY();
+        this.dx = dirX / totalDistance;
+        this.dy = dirY / totalDistance;
     }
 
-
     /**
-     * Calcule la distance entre les deux planètes.
-     * @return distance entre source et destination
-     */
-    private double calculateDistance() {
-        double dx = destination.getX() - source.getX();
-        double dy = destination.getY() - source.getY();
-        return Math.sqrt(dx * dx + dy * dy);
-    }
-
-
-    /**
-     * Fait avancer la flotte d'une certaine distance.
-     * @param speed distance à parcourir ce tour
+     * Fait avancer la flotte d'une certaine distance en direction de la cible.
+     *
+     * @param speed la distance à parcourir ce tour-ci
      */
     public void advance(double speed) {
-        remainingDistance -= speed;
+        double step = Math.min(speed, distanceRemaining);
+        x += dx * step;
+        y += dy * step;
+        distanceRemaining -= step;
     }
 
-
     /**
-     * Indique si la flotte est arrivée à destination.
-     * @return vrai si distance restante <= 0
+     * Vérifie si la flotte est arrivée à destination.
+     *
+     * @return true si la flotte a atteint sa planète cible, false sinon
      */
     public boolean hasArrived() {
-        return remainingDistance <= 0;
+        return distanceRemaining <= 0;
     }
 
 
     /**
-     * Applique l'effet de l'arrivée de la flotte sur la planète cible.
+     * Applique les effets de la flotte à son arrivée sur la planète cible.
      */
     public void applyArrival() {
-        destination.receiveFleet(ownerId, shipCount);
+        target.receiveFleet(this);
     }
 
-    // Getters si besoin
+    //getters
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public Planet getSource() { return source; }
+    public Planet getTarget() { return target; }
+    public int getOwnerId() { return ownerId; }
+    public double getShips() { return ships; }
+
+
+    /**
+     * Calcule la distance euclidienne entre deux points (x1, y1) et (x2, y2).
+     *
+     * @param x1 abscisse du premier point
+     * @param y1 ordonnée du premier point
+     * @param x2 abscisse du second point
+     * @param y2 ordonnée du second point
+     * @return la distance entre les deux points
+     */
+    private double distance(double x1, double y1, double x2, double y2) {
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
 }

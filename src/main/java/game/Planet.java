@@ -123,6 +123,12 @@ public class Planet {
         this.ships = Math.max(0, this.ships - n);
     }
 
+    //surchage de la fonction pour lui permettre de prendre un objet fleet et pas planet uniquement
+    public void receiveFleet(Fleet fleet) {
+        receiveFleet(fleet.getOwnerId(), (int) fleet.getShips());
+    }
+
+
 
 
 

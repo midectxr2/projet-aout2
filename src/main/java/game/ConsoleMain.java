@@ -21,6 +21,17 @@ public class ConsoleMain {
                     System.out.printf("Planète (%.1f, %.1f) | Taille: %.2f | Richesse: %.2f | Joueur %d | Vaisseaux: %.1f\n",
                             p.getX(), p.getY(), p.getSize(), p.getRichness(), p.getOwnerId(), p.getShips());
                 }
+
+                System.out.println("Flottes en transit :");
+                for (Fleet f : game.getMap().getFleets()) {
+                    System.out.printf("Joueur %d : %.1f vaisseaux de (%.1f, %.1f) vers (%.1f, %.1f) | Position actuelle : (%.2f, %.2f)\n",
+                            f.getOwnerId(), f.getShips(),
+                            f.getSource().getX(), f.getSource().getY(),
+                            f.getTarget().getX(), f.getTarget().getY(),
+                            f.getX(), f.getY());
+                }
+
+
                 game.nextTurn();
                 game.eliminateDefeatedPlayers();
             }

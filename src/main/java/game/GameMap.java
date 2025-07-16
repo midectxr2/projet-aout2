@@ -40,4 +40,8 @@ public class GameMap {
     public void removeFleetsByPlayer(int playerId) {
         fleets.removeIf(fleet -> fleet.getOwnerId() == playerId);
     }
+
+    public List<Fleet> getFleets() {
+        return fleets;
+    }
 }

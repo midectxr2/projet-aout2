@@ -35,7 +35,7 @@ public class Game {
                 p.playTurn(this);
             }
         }
-        map.moveFleets(1.0);
+        map.moveFleets(5.0);
         map.updatePlanetsGrowth();
         currentTurn++;
         updateOwnerships();
