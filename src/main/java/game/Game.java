@@ -19,6 +19,8 @@ public class Game {
         this.map = map;
         this.players = players;
         this.currentTurn = 0;
+        updateOwnerships();
+
     }
 
     /**
@@ -26,12 +28,17 @@ public class Game {
      */
     public void nextTurn() {
         updateOwnerships();
+        if (isGameOver()) return;
+
         for (Player p : players) {
-            p.playTurn(this);
+            if (!p.getOwnedPlanets().isEmpty()) {
+                p.playTurn(this);
+            }
         }
         map.moveFleets(1.0);
         map.updatePlanetsGrowth();
         currentTurn++;
+        updateOwnerships();
     }
 
     private void updateOwnerships() {
@@ -86,6 +93,8 @@ public class Game {
             }
         }
     }
+
+
 
 
 

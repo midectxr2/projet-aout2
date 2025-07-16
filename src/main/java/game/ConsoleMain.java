@@ -22,6 +22,7 @@ public class ConsoleMain {
                             p.getX(), p.getY(), p.getSize(), p.getRichness(), p.getOwnerId(), p.getShips());
                 }
                 game.nextTurn();
+                game.eliminateDefeatedPlayers();
             }
 
             Player winner = game.getWinner();
