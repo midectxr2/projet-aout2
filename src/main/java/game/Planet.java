@@ -1,5 +1,7 @@
 package game;
-
+/**
+ * Représente une planète possédant des caractéristiques et des vaisseaux.
+ */
 public class Planet {
     private double x,y ;
     private double size;
@@ -7,6 +9,10 @@ public class Planet {
     private int ownerId; // 0 = neutre
     private double ships;
 
+
+    /**
+     * Crée une planète avec ses propriétés.
+     */
     public Planet(double x, double y, double size, double richness, int ownerId, double ships){
         this.x = x;
         this.y = y;
@@ -16,6 +22,9 @@ public class Planet {
         this.ships = ships;
     }
 
+    /**
+     * Met à jour la croissance ou la décroissance des vaisseaux.
+     */
     public void growShips(){
         if(ships<getCapacity() && ownerId != 0){
             ships = Math.min(getCapacity(), ships + richness);
@@ -24,9 +33,16 @@ public class Planet {
         }
     }
 
+
+    /**
+     * Calcule la capacité maximale de vaisseaux de la planète.
+     * @return capacité en nombre de vaisseaux
+     */
     public double getCapacity(){
         return 20.0*size;
     }
+
+
 
     public double getX() {
         return x;
@@ -75,6 +91,30 @@ public class Planet {
     public void setShips(double ships) {
         this.ships = ships;
     }
+
+
+    /**
+     * Gère l'arrivée d'une flotte sur la planète.
+     */
+    public void receiveFleet(int attackerId, int incomingShips) {
+        int currentShips = (int) Math.floor(this.ships);
+        if (ownerId == attackerId) {
+            this.ships += incomingShips;
+        } else {
+            int result = incomingShips - currentShips;
+            if (result > 0) {
+                this.ships = result;
+                this.ownerId = attackerId;
+            } else if (result < 0) {
+                this.ships = -result;
+                // ownerId reste inchangé
+            } else {
+                this.ships = 0;
+                this.ownerId = 0; // devient neutre
+            }
+        }
+    }
+
 
 
 
