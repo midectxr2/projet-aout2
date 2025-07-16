@@ -15,28 +15,46 @@ public class Game {
      * @param map la carte du jeu
      * @param players la liste des joueurs
      */
-    public Game(GameMap map, List<Player> players){
+    public Game(GameMap map, List<Player> players) {
         this.map = map;
         this.players = players;
         this.currentTurn = 0;
     }
 
-
     /**
      * Effectue le traitement d'un tour de jeu.
      */
-    public void nextTurn(){
-        //logique d'un tour complet : croissance des planètes, déplacements, résolutions
+    public void nextTurn() {
+        updateOwnerships();
+        for (Player p : players) {
+            p.playTurn(this);
+        }
+        map.moveFleets(1.0);
+        map.updatePlanetsGrowth();
+        currentTurn++;
     }
 
+    private void updateOwnerships() {
+        for (Player p : players) {
+            p.clearPlanets();
+        }
+        for (Planet planet : map.getPlanets()) {
+            int owner = planet.getOwnerId();
+            if (owner > 0 && owner <= players.size()) {
+                players.get(owner - 1).addPlanet(planet);
+            }
+        }
+    }
 
-    /**
-     * Retourne la carte de jeu actuelle.
-     * @return la carte de jeu
-     */
-    public GameMap getMap(){
+    public GameMap getMap() {
         return map;
     }
 
-}
+    public int getCurrentTurn() {
+        return currentTurn;
+    }
 
+    public List<Player> getPlayers() {
+        return players;
+    }
+}

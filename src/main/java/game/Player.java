@@ -1,26 +1,35 @@
 package game;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Représente un joueur (humain ou IA).
  */
 public abstract class Player {
     protected int id;
+    protected List<Planet> ownedPlanets;
 
-    /**
-     * Crée un joueur avec un identifiant.
-     * @param id identifiant du joueur
-     */
-    public Player(int id){
+    public Player(int id) {
         this.id = id;
+        this.ownedPlanets = new ArrayList<>();
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 
+    public void addPlanet(Planet p) {
+        ownedPlanets.add(p);
+    }
 
-    /**
-     * Définit la méthode de jeu du joueur pour un tour.
-     * @param game l'état du jeu
-     */
+    public void clearPlanets() {
+        ownedPlanets.clear();
+    }
+
+    public List<Planet> getOwnedPlanets() {
+        return ownedPlanets;
+    }
+
     public abstract void playTurn(Game game);
 }

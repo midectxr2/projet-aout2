@@ -115,6 +115,14 @@ public class Planet {
         }
     }
 
+    /**
+     * Retire un nombre donné de vaisseaux à la planète.
+     * @param n le nombre de vaisseaux à retirer
+     */
+    public void removeShips(int n) {
+        this.ships = Math.max(0, this.ships - n);
+    }
+
 
 
 
