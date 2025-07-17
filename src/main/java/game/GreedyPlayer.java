@@ -1,6 +1,5 @@
 package game;
 
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -19,18 +18,29 @@ public class GreedyPlayer extends Player {
         List<Planet> all = game.getMap().getPlanets();
 
         for (Planet source : owned) {
-            if (source.getShips() < 2) continue;
 
-            // Trouver la planète non possédée la plus proche
-            Planet target = all.stream()
-                    .filter(p -> p.getOwnerId() != this.getId())
-                    .min(Comparator.comparingDouble(p -> distance(source, p)))
-                    .orElse(null);
+            //10 nombre arbitraire
+            if (source.getShips() < 10) continue;
 
-            if (target != null && target != source) {
+            Planet closest = null;
+            double bestDist = Double.MAX_VALUE;
+
+
+            //Planète la plus proche
+            for (Planet candidate : all) {
+                if (candidate.getOwnerId() != this.getId()) {
+                    double d = distance(source, candidate);
+                    if (d < bestDist) {
+                        bestDist = d;
+                        closest = candidate;
+                    }
+                }
+            }
+
+            if (closest != null) {
                 int shipsToSend = (int) (source.getShips() * 0.5);
                 source.removeShips(shipsToSend);
-                Fleet fleet = new Fleet(source, target, this.getId(), shipsToSend);
+                Fleet fleet = new Fleet(source, closest, this.getId(), shipsToSend);
                 game.getMap().addFleet(fleet);
             }
         }
@@ -42,4 +52,3 @@ public class GreedyPlayer extends Player {
         return Math.sqrt(dx * dx + dy * dy);
     }
 }
-
