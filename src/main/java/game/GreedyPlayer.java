@@ -3,7 +3,7 @@ package game;
 import java.util.List;
 
 /**
- * IA "Greedy" qui tente de capturer le plus de planètes possible.
+ * IA Greedy qui tente de capturer le plus de planètes possible.
  * Elle envoie la moitié de ses vaisseaux disponibles vers la planète la plus proche non possédée.
  */
 public class GreedyPlayer extends Player {

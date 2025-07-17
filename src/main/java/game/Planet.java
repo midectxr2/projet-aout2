@@ -68,30 +68,6 @@ public class Planet {
         return ships;
     }
 
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public void setSize(double size) {
-        this.size = size;
-    }
-
-    public void setRichness(double richness) {
-        this.richness = richness;
-    }
-
-    public void setOwnerId(int ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public void setShips(double ships) {
-        this.ships = ships;
-    }
-
 
     /**
      * Gère l'arrivée d'une flotte sur la planète.
