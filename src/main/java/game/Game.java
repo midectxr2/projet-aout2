@@ -24,7 +24,12 @@ public class Game {
     }
 
     /**
-     * Effectue le traitement d'un tour de jeu.
+     * Avance d'un tour dans la partie :
+     * - met à jour les planètes possédées par chaque joueur,
+     * - fait jouer les joueurs actifs,
+     * - déplace les flottes,
+     * - fait croître les planètes.
+     * La progression est interrompue si la partie est terminée.
      */
     public void nextTurn() {
         updateOwnerships();
@@ -41,6 +46,10 @@ public class Game {
         updateOwnerships();
     }
 
+    /**
+     * Met à jour la liste des planètes possédées par chaque joueur.
+     * Doit être appelée après chaque changement de propriété planétaire.
+     */
     private void updateOwnerships() {
         for (Player p : players) {
             p.clearPlanets();
@@ -65,6 +74,11 @@ public class Game {
         return players;
     }
 
+
+    /**
+     * Vérifie si un seul joueur ou moins possède encore des planètes.
+     * @return true si la partie est terminée
+     */
     public boolean isGameOver() {
         int alive = 0;
         for (Player p : players) {
@@ -75,6 +89,11 @@ public class Game {
         return alive <= 1;
     }
 
+
+    /**
+     * Retourne le joueur encore en vie (non éliminé), s’il y en a un.
+     * @return le gagnant ou null si aucun joueur n’a de planète
+     */
     public Player getWinner() {
         for (Player p : players) {
             if (!p.getOwnedPlanets().isEmpty()) {
@@ -84,6 +103,11 @@ public class Game {
         return null;
     }
 
+
+    /**
+     * Élimine les joueurs sans planète.
+     * Supprime leurs flottes restantes.
+     */
     public void eliminateDefeatedPlayers() {
         for (Player p : players) {
             if (p.getOwnedPlanets().isEmpty()) {
