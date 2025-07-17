@@ -13,6 +13,12 @@ public class HumanPlayer extends Player {
         super(id);
     }
 
+
+    /**
+     * Joue un tour : affiche les planètes, demande une action à l'utilisateur,
+     * et crée une flotte si une attaque est lancée.
+     * @param game instance courante du jeu
+     */
     @Override
     public void playTurn(Game game) {
         System.out.println("\n[Joueur " + id + "] Vos planètes :");

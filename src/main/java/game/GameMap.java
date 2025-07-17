@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GameMap {
@@ -19,8 +20,15 @@ public class GameMap {
         fleets.add(fleet);
     }
 
+
+    /**
+     * Fait avancer toutes les flottes d'une distance donnée.
+     * Applique leur effet à l'arrivée.
+     * @param speed distance parcourue par tour
+     */
     public void moveFleets(double speed) {
         List<Fleet> arrived = new ArrayList<>();
+        Collections.shuffle(fleets);
         for (Fleet f : fleets) {
             f.advance(speed);
             if (f.hasArrived()) {
@@ -31,12 +39,21 @@ public class GameMap {
         fleets.removeAll(arrived);
     }
 
+
+    /**
+     * Fait croître chaque planète en fonction de sa richesse.
+     */
     public void updatePlanetsGrowth() {
         for (Planet p : planets) {
             p.growShips();
         }
     }
 
+
+    /**
+     * Supprime toutes les flottes appartenant à un joueur donné.
+     * @param playerId identifiant du joueur éliminé
+     */
     public void removeFleetsByPlayer(int playerId) {
         fleets.removeIf(fleet -> fleet.getOwnerId() == playerId);
     }
