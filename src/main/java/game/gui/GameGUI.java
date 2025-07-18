@@ -14,19 +14,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Interface graphique avec menu principal : jouer, configurer ou quitter.
+ * Interface graphique.
  */
 public class GameGUI extends Application {
 
     private Stage primaryStage;
     private double fleetSpeed = 1.0; // valeur par défaut
     private final List<PlanetView> planetViews = new ArrayList<>();
+    private final List<FleetView> fleetViews = new ArrayList<>();
     private final static int WINDOW_WIDTH = 800;
     private final static int WINDOW_HEIGHT = 600;
 
     private Game game;
     private PlanetView selectedSource = null;
     private int shipsToSend = 0;
+    private Pane root;
+    private int scale;
 
     @Override
     public void start(Stage stage) {
@@ -42,7 +45,7 @@ public class GameGUI extends Application {
         Button playButton = new Button("Jouer");
         playButton.setOnAction(e -> startGame());
 
-        Button configButton = new Button("Configurer la vitesse des flottes");
+        Button configButton = new Button("Config");
         configButton.setOnAction(e -> showConfigMenu());
 
         Button quitButton = new Button("Quitter");
@@ -91,10 +94,11 @@ public class GameGUI extends Application {
 
             int mapWidth = game.getMap().getWidth();
             int mapHeight = game.getMap().getHeight();
-            int scale = Math.min(WINDOW_WIDTH / mapWidth, WINDOW_HEIGHT / mapHeight);
+            scale = Math.min(WINDOW_WIDTH / mapWidth, WINDOW_HEIGHT / mapHeight);
 
-            Pane root = new Pane();
+            root = new Pane();
             planetViews.clear();
+            fleetViews.clear();
 
             for (Planet p : game.getMap().getPlanets()) {
                 PlanetView view = new PlanetView(p, scale, 25);
@@ -118,9 +122,12 @@ public class GameGUI extends Application {
             nextTurn.setOnAction(e -> {
                 game.nextTurn();
                 game.eliminateDefeatedPlayers();
+
                 for (PlanetView pv : planetViews) {
                     pv.update();
                 }
+
+                updateFleetViews();
             });
 
             root.getChildren().add(nextTurn);
@@ -167,10 +174,37 @@ public class GameGUI extends Application {
             Fleet fleet = new Fleet(source, target, 1, ships);
             game.getMap().addFleet(fleet);
 
+            FleetView fleetView = new FleetView(fleet, scale);
+            fleetViews.add(fleetView);
+            root.getChildren().add(fleetView);
+
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Flotte envoyée");
             alert.setContentText("Vous avez envoyé " + ships + " vaisseaux vers la planète " + target.getId());
             alert.showAndWait();
+        }
+    }
+
+    private void updateFleetViews() {
+        List<Fleet> fleets = game.getMap().getFleets();
+
+        // Ajout des nouvelles FleetView manquantes
+        for (Fleet f : fleets) {
+            boolean alreadyPresent = fleetViews.stream().anyMatch(fv -> fv.getFleet() == f);
+            if (!alreadyPresent) {
+                FleetView newView = new FleetView(f, scale);
+                fleetViews.add(newView);
+                root.getChildren().add(newView);
+            }
+        }
+
+        // Suppression des FleetView terminées
+        fleetViews.removeIf(view -> !fleets.contains(view.getFleet()));
+        root.getChildren().removeIf(node -> node instanceof FleetView && !fleets.contains(((FleetView) node).getFleet()));
+
+        // Mise à jour des positions
+        for (FleetView fv : fleetViews) {
+            fv.update();
         }
     }
 }
