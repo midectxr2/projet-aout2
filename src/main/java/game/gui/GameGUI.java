@@ -1,0 +1,176 @@
+package game.gui;
+
+import game.*;
+import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Interface graphique avec menu principal : jouer, configurer ou quitter.
+ */
+public class GameGUI extends Application {
+
+    private Stage primaryStage;
+    private double fleetSpeed = 1.0; // valeur par défaut
+    private final List<PlanetView> planetViews = new ArrayList<>();
+    private final static int WINDOW_WIDTH = 800;
+    private final static int WINDOW_HEIGHT = 600;
+
+    private Game game;
+    private PlanetView selectedSource = null;
+    private int shipsToSend = 0;
+
+    @Override
+    public void start(Stage stage) {
+        this.primaryStage = stage;
+        showMainMenu();
+    }
+
+    private void showMainMenu() {
+        VBox menu = new VBox(20);
+        menu.setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        menu.setStyle("-fx-alignment: center; -fx-background-color: black;");
+
+        Button playButton = new Button("Jouer");
+        playButton.setOnAction(e -> startGame());
+
+        Button configButton = new Button("Configurer la vitesse des flottes");
+        configButton.setOnAction(e -> showConfigMenu());
+
+        Button quitButton = new Button("Quitter");
+        quitButton.setOnAction(e -> primaryStage.close());
+
+        menu.getChildren().addAll(playButton, configButton, quitButton);
+        Scene scene = new Scene(menu);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Menu Principal");
+        primaryStage.show();
+    }
+
+    private void showConfigMenu() {
+        VBox config = new VBox(15);
+        config.setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        config.setStyle("-fx-alignment: center; -fx-background-color: black;");
+
+        Label label = new Label("Vitesse des flottes :");
+        label.setStyle("-fx-text-fill: white;");
+
+        Slider speedSlider = new Slider(0.5, 10, fleetSpeed);
+        speedSlider.setShowTickLabels(true);
+        speedSlider.setShowTickMarks(true);
+        speedSlider.setMajorTickUnit(1);
+        speedSlider.setBlockIncrement(0.5);
+
+        Button backButton = new Button("Retour");
+        backButton.setOnAction(e -> showMainMenu());
+
+        Button applyButton = new Button("Appliquer");
+        applyButton.setOnAction(e -> {
+            fleetSpeed = speedSlider.getValue();
+            showMainMenu();
+        });
+
+        config.getChildren().addAll(label, speedSlider, applyButton, backButton);
+        Scene scene = new Scene(config);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Configuration");
+    }
+
+    private void startGame() {
+        try {
+            game = GameLoader.loadGameFromFile("src/main/resources/map.txt");
+            game.setFleetSpeed(fleetSpeed);
+
+            int mapWidth = game.getMap().getWidth();
+            int mapHeight = game.getMap().getHeight();
+            int scale = Math.min(WINDOW_WIDTH / mapWidth, WINDOW_HEIGHT / mapHeight);
+
+            Pane root = new Pane();
+            planetViews.clear();
+
+            for (Planet p : game.getMap().getPlanets()) {
+                PlanetView view = new PlanetView(p, scale, 25);
+                planetViews.add(view);
+                root.getChildren().add(view);
+
+                view.setOnMouseClicked(e -> {
+                    if (selectedSource == null && p.getOwnerId() == 1) {
+                        openShipSelectionDialog(view);
+                    } else if (selectedSource != null && p.getOwnerId() != 1) {
+                        confirmFleetDispatch(selectedSource.getPlanet(), view.getPlanet(), shipsToSend);
+                        selectedSource = null;
+                        shipsToSend = 0;
+                    }
+                });
+            }
+
+            Button nextTurn = new Button("Tour suivant");
+            nextTurn.setLayoutX(10);
+            nextTurn.setLayoutY(10);
+            nextTurn.setOnAction(e -> {
+                game.nextTurn();
+                game.eliminateDefeatedPlayers();
+                for (PlanetView pv : planetViews) {
+                    pv.update();
+                }
+            });
+
+            root.getChildren().add(nextTurn);
+
+            Scene gameScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+            primaryStage.setScene(gameScene);
+            primaryStage.setTitle("Partie en cours");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openShipSelectionDialog(PlanetView view) {
+        selectedSource = view;
+        Planet source = view.getPlanet();
+
+        Dialog<Integer> dialog = new Dialog<>();
+        dialog.setTitle("Envoyer des vaisseaux");
+        dialog.setHeaderText("Planète " + source.getId());
+
+        Label label = new Label("Nombre de vaisseaux à envoyer (max: " + (int) source.getShips() + "):");
+        Spinner<Integer> spinner = new Spinner<>(1, (int) source.getShips(), 1);
+
+        VBox content = new VBox(10, label, spinner);
+        content.setAlignment(Pos.CENTER_LEFT);
+        dialog.getDialogPane().setContent(content);
+
+        ButtonType okButton = new ButtonType("Confirmer", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButton, ButtonType.CANCEL);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == okButton) {
+                return spinner.getValue();
+            }
+            return null;
+        });
+
+        dialog.showAndWait().ifPresent(val -> shipsToSend = val);
+    }
+
+    private void confirmFleetDispatch(Planet source, Planet target, int ships) {
+        if (ships > 0 && source.getShips() >= ships) {
+            source.removeShips(ships);
+            Fleet fleet = new Fleet(source, target, 1, ships);
+            game.getMap().addFleet(fleet);
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Flotte envoyée");
+            alert.setContentText("Vous avez envoyé " + ships + " vaisseaux vers la planète " + target.getId());
+            alert.showAndWait();
+        }
+    }
+}

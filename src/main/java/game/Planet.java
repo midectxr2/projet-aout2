@@ -3,6 +3,9 @@ package game;
  * Représente une planète possédant des caractéristiques et des vaisseaux.
  */
 public class Planet {
+
+
+    private int id;
     private double x,y ;
     private double size;
     private double richness;
@@ -13,7 +16,8 @@ public class Planet {
     /**
      * Crée une planète avec ses propriétés.
      */
-    public Planet(double x, double y, double size, double richness, int ownerId, double ships){
+    public Planet(int id, double x, double y, double size, double richness, int ownerId, double ships){
+        this.id = id;
         this.x = x;
         this.y = y;
         this.size = size;
@@ -66,6 +70,10 @@ public class Planet {
 
     public double getShips() {
         return ships;
+    }
+
+    public int getId() {
+        return id;
     }
 
 

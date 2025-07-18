@@ -7,7 +7,6 @@ import java.util.Scanner;
  * Implémentation d'un joueur humain contrôlé via la console.
  */
 public class HumanPlayer extends Player {
-    private Scanner scanner = new Scanner(System.in);
 
     public HumanPlayer(int id) {
         super(id);
@@ -31,7 +30,7 @@ public class HumanPlayer extends Player {
         int sourceIndex;
         while (true) {
             System.out.print("Sélectionnez une planète source (index) ou -1 pour passer : ");
-            sourceIndex = scanner.nextInt();
+            sourceIndex = -1;
             if (sourceIndex == -1) return;
             if (sourceIndex >= 0 && sourceIndex < ownedPlanets.size()) break;
             System.out.println("Index invalide. Réessayez.");
@@ -51,7 +50,7 @@ public class HumanPlayer extends Player {
             }
 
             System.out.print("Sélectionnez une planète cible (index) : ");
-            targetIndex = scanner.nextInt();
+            targetIndex = -1;
             if (targetIndex < 0 || targetIndex >= all.size()) {
                 System.out.println("Index invalide. Réessayez.");
                 continue;
@@ -69,7 +68,7 @@ public class HumanPlayer extends Player {
         int nb;
         while (true) {
             System.out.print("Combien de vaisseaux envoyer ? (max " + (int) source.getShips() + ") : ");
-            nb = scanner.nextInt();
+            nb = 0;
             if (nb > 0 && nb < source.getShips()) break;
             System.out.println("Quantité invalide. Réessayez.");
         }

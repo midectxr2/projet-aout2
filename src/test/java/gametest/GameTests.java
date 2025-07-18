@@ -15,7 +15,7 @@ public class GameTests {
 
     @BeforeEach
     public void setup() {
-        p = new Planet(0, 0, 1.0, 1.0, 1, 10); // planète de joueur 1 avec 10 vaisseaux
+        p = new Planet(1, 0, 0, 1.0, 1.0, 1, 10); // planète de joueur 1 avec 10 vaisseaux
     }
 
     /**
@@ -63,7 +63,7 @@ public class GameTests {
      */
     @Test
     public void testFlotteNePeutPasViderPlanete() {
-        Planet source = new Planet(1, 1, 1.0, 1.0, 1, 10);
+        Planet source = new Planet(1,1, 1, 1.0, 1.0, 1, 10);
         Fleet f = new Fleet(source, p, 1, 10);
         assertFalse(f.getShips() < source.getShips());
     }
@@ -73,8 +73,8 @@ public class GameTests {
      */
     @Test
     public void testAvancementFlotte() {
-        Planet source = new Planet(0, 0, 1, 1, 1, 10);
-        Planet target = new Planet(3, 4, 1, 1, 2, 5); // distance = 5
+        Planet source = new Planet(1,0, 0, 1, 1, 1, 10);
+        Planet target = new Planet(2,3, 4, 1, 1, 2, 5); // distance = 5
         Fleet f = new Fleet(source, target, 1, 5);
         f.advance(2);
         //distance = 5 -> direction: (0.6,0.8), donc position après 2 tours: (1.2, 1.8).
@@ -88,7 +88,7 @@ public class GameTests {
      */
     @Test
     public void testArriveeFlotteAppliqueEffets() {
-        Planet cible = new Planet(5, 5, 1, 1, 2, 3);
+        Planet cible = new Planet(2, 5, 5, 1, 1, 2, 3);
         Fleet f = new Fleet(p, cible, 1, 10);
         f.advance(100);
         assertTrue(f.hasArrived());
@@ -102,7 +102,7 @@ public class GameTests {
      */
     @Test
     public void testCroissancePlanete() {
-        Planet croissante = new Planet(0, 0, 1, 1.5, 1, 10);
+        Planet croissante = new Planet(1, 0, 0, 1, 1.5, 1, 10);
         GameMap map = new GameMap();
         map.addPlanet(croissante);
         map.updatePlanetsGrowth();
@@ -114,7 +114,7 @@ public class GameTests {
      */
     @Test
     public void testPasDeCroissanceSiNeutre() {
-        Planet neutre = new Planet(0, 0, 1, 2.0, 0, 5);
+        Planet neutre = new Planet(0,0, 0, 1, 2.0, 0, 5);
         GameMap map = new GameMap();
         map.addPlanet(neutre);
         map.updatePlanetsGrowth();
@@ -127,8 +127,8 @@ public class GameTests {
     @Test
     public void testSuppressionFlottesJoueur() {
         GameMap map = new GameMap();
-        Planet a = new Planet(0, 0, 1, 1, 1, 10);
-        Planet b = new Planet(1, 1, 1, 1, 2, 10);
+        Planet a = new Planet(1,0, 0, 1, 1, 1, 10);
+        Planet b = new Planet(1, 1, 1, 1, 1, 2, 10);
         map.addFleet(new Fleet(a, b, 1, 5));
         map.addFleet(new Fleet(b, a, 2, 5));
         map.removeFleetsByPlayer(1);

@@ -6,9 +6,18 @@ import java.util.List;
  * Gère la logique principale du jeu.
  */
 public class Game {
+    private double fleetSpeed = 1.0;
     private GameMap map;
     private List<Player> players;
     private int currentTurn;
+
+    /**
+     * Définit la vitesse globale des flottes.
+     * @param speed valeur en unités de distance par tour
+     */
+    public void setFleetSpeed(double speed) {
+        this.fleetSpeed = speed;
+    }
 
     /**
      * Initialise une nouvelle partie.
@@ -40,7 +49,7 @@ public class Game {
                 p.playTurn(this);
             }
         }
-        map.moveFleets(5.0);
+        map.moveFleets(fleetSpeed);
         map.updatePlanetsGrowth();
         currentTurn++;
         updateOwnerships();

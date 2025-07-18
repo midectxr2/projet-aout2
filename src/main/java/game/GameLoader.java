@@ -23,9 +23,11 @@ public class GameLoader {
             int height = Integer.parseInt(dims[1]);
 
             GameMap map = new GameMap();
+            map.setHeight(height);
+            map.setWidth(width);
             List<Player> players = new ArrayList<>();
             int maxPlayerId = 0;
-
+            int planetId = 0;
             String line;
             while ((line = br.readLine()) != null) {
                 String[] tokens = line.trim().split(" ");
@@ -36,7 +38,7 @@ public class GameLoader {
                 double richness = Double.parseDouble(tokens[3]);
                 int ownerId = Integer.parseInt(tokens[4]);
                 double ships = Double.parseDouble(tokens[5]);
-                map.addPlanet(new Planet(x, y, size, richness, ownerId, ships));
+                map.addPlanet(new Planet(planetId++, x, y, size, richness, ownerId, ships));
                 if (ownerId > maxPlayerId) {
                     maxPlayerId = ownerId;
                 }

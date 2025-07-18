@@ -8,6 +8,26 @@ public class GameMap {
     private List<Planet> planets = new ArrayList<>();
     private List<Fleet> fleets = new ArrayList<>();
 
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    private int width;
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    private int height;
+
     public List<Planet> getPlanets() {
         return planets;
     }
