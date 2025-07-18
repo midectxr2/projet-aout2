@@ -54,6 +54,8 @@ public class PlanetView extends Group {
         return switch (id) {
             case 1 -> Color.ROYALBLUE;
             case 2 -> Color.CRIMSON;
+            case 3 -> Color.GREEN;
+            case 4 -> Color.WHITE;
             default -> Color.LIGHTGRAY;
         };
     }

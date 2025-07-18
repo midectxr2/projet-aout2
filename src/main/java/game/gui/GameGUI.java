@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Interface graphique.
+ * Interface graphique avec menu principal : jouer, configurer ou quitter.
  */
 public class GameGUI extends Application {
 
@@ -42,55 +42,37 @@ public class GameGUI extends Application {
         menu.setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         menu.setStyle("-fx-alignment: center; -fx-background-color: black;");
 
-        Button playButton = new Button("Jouer");
-        playButton.setOnAction(e -> startGame());
+        Label title = new Label("Choisissez un mode de jeu");
+        title.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
 
-        Button configButton = new Button("Config");
+        Button mode1v1 = new Button("1 Joueur vs 1 IA");
+        mode1v1.setOnAction(e -> startGameWithMap("map_1v1.txt", 2));
+
+        Button mode1v1v1 = new Button("1 Joueur vs 2 IA");
+        mode1v1v1.setOnAction(e -> startGameWithMap("map_1v1v1.txt", 3));
+
+        Button mode1v1v1v1 = new Button("1 Joueur vs 3 IA");
+        mode1v1v1v1.setOnAction(e -> startGameWithMap("map_1v1v1v1.txt", 4));
+
+        Button configButton = new Button("Configurer la vitesse des flottes");
         configButton.setOnAction(e -> showConfigMenu());
 
         Button quitButton = new Button("Quitter");
         quitButton.setOnAction(e -> primaryStage.close());
 
-        menu.getChildren().addAll(playButton, configButton, quitButton);
+        menu.getChildren().addAll(title, mode1v1, mode1v1v1, mode1v1v1v1, configButton, quitButton);
         Scene scene = new Scene(menu);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Menu Principal");
         primaryStage.show();
     }
 
-    private void showConfigMenu() {
-        VBox config = new VBox(15);
-        config.setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        config.setStyle("-fx-alignment: center; -fx-background-color: black;");
-
-        Label label = new Label("Vitesse des flottes :");
-        label.setStyle("-fx-text-fill: white;");
-
-        Slider speedSlider = new Slider(0.5, 10, fleetSpeed);
-        speedSlider.setShowTickLabels(true);
-        speedSlider.setShowTickMarks(true);
-        speedSlider.setMajorTickUnit(1);
-        speedSlider.setBlockIncrement(0.5);
-
-        Button backButton = new Button("Retour");
-        backButton.setOnAction(e -> showMainMenu());
-
-        Button applyButton = new Button("Appliquer");
-        applyButton.setOnAction(e -> {
-            fleetSpeed = speedSlider.getValue();
-            showMainMenu();
-        });
-
-        config.getChildren().addAll(label, speedSlider, applyButton, backButton);
-        Scene scene = new Scene(config);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Configuration");
-    }
-
-    private void startGame() {
+    private void startGameWithMap(String filename, int totalPlayers) {
         try {
-            game = GameLoader.loadGameFromFile("src/main/resources/map.txt");
+            game = GameLoader.loadGameFromFile("src/main/resources/" + filename);
             game.setFleetSpeed(fleetSpeed);
+
+
 
             int mapWidth = game.getMap().getWidth();
             int mapHeight = game.getMap().getHeight();
@@ -138,6 +120,36 @@ public class GameGUI extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void showConfigMenu() {
+        VBox config = new VBox(15);
+        config.setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        config.setStyle("-fx-alignment: center; -fx-background-color: black;");
+
+        Label label = new Label("Vitesse des flottes :");
+        label.setStyle("-fx-text-fill: white;");
+
+        Slider speedSlider = new Slider(0.5, 10, fleetSpeed);
+        speedSlider.setShowTickLabels(true);
+        speedSlider.setShowTickMarks(true);
+        speedSlider.setMajorTickUnit(1);
+        speedSlider.setBlockIncrement(0.5);
+
+        Button backButton = new Button("Retour");
+        backButton.setOnAction(e -> showMainMenu());
+
+        Button applyButton = new Button("Appliquer");
+        applyButton.setOnAction(e -> {
+            fleetSpeed = speedSlider.getValue();
+            showMainMenu();
+        });
+
+        config.getChildren().addAll(label, speedSlider, applyButton, backButton);
+        Scene scene = new Scene(config);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Configuration");
     }
 
     private void openShipSelectionDialog(PlanetView view) {
