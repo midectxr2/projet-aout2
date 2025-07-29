@@ -43,17 +43,11 @@ public class GameGUI extends Application {
         menu.setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         menu.setStyle("-fx-alignment: center; -fx-background-color: black;");
 
-        Label title = new Label("Choisissez un mode de jeu");
+        Label title = new Label("Carte chargée. Sélectionnez les types de joueurs :");
         title.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
 
-        Button mode1v1 = new Button("1 Joueur vs 1 IA");
-        mode1v1.setOnAction(e -> startGameWithMap("map_1v1.txt", 2));
-
-        Button mode1v1v1 = new Button("1 Joueur vs 2 IA");
-        mode1v1v1.setOnAction(e -> startGameWithMap("map_1v1v1.txt", 3));
-
-        Button mode1v1v1v1 = new Button("1 Joueur vs 3 IA");
-        mode1v1v1v1.setOnAction(e -> startGameWithMap("map_1v1v1v1.txt", 4));
+        Button playButton = new Button("Lancer la partie");
+        playButton.setOnAction(e -> showPlayerAssignmentMenu());
 
         Button configButton = new Button("Configurer la vitesse des flottes");
         configButton.setOnAction(e -> showConfigMenu());
@@ -61,79 +55,117 @@ public class GameGUI extends Application {
         Button quitButton = new Button("Quitter");
         quitButton.setOnAction(e -> primaryStage.close());
 
-        menu.getChildren().addAll(title, mode1v1, mode1v1v1, mode1v1v1v1, configButton, quitButton);
+        menu.getChildren().addAll(title, playButton, configButton, quitButton);
         Scene scene = new Scene(menu);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Menu Principal");
         primaryStage.show();
     }
 
-    private void startGameWithMap(String filename, int totalPlayers) {
+    private void showPlayerAssignmentMenu() {
         try {
-            game = GameLoader.loadGameFromFile("src/main/resources/" + filename);
+            game = GameLoader.loadGameFromFile("src/main/resources/map_1v1.txt");
             game.setFleetSpeed(fleetSpeed);
 
-            // Crée les joueurs
-            game.clearPlayers();
-            game.addPlayer(new HumanPlayer(1));
-            for (int i = 2; i <= totalPlayers; i++) {
-                game.addPlayer(new GreedyPlayer(i));
+            VBox assignMenu = new VBox(10);
+            assignMenu.setStyle("-fx-alignment: center; -fx-padding: 20;");
+
+            Label title = new Label("Assignez les types de joueurs :");
+            List<ComboBox<String>> selectors = new ArrayList<>();
+
+            int basePlayers = 2;
+            int maxPlayers = 4;
+            for (int i = 1; i <= maxPlayers; i++) {
+                Label label = new Label("Joueur " + i);
+                ComboBox<String> selector = new ComboBox<>();
+                selector.getItems().addAll("AUCUN", "HUMAIN", "IA : Dummy", "IA : Greedy", "IA : Smart");
+                if (i == 1) selector.setValue("HUMAIN");
+                else if (i <= basePlayers) selector.setValue("IA : Greedy");
+                else selector.setValue("AUCUN");
+                selectors.add(selector);
+                assignMenu.getChildren().addAll(label, selector);
             }
 
-            // Répartit aléatoirement les planètes entre les joueurs
-            List<Planet> planets = game.getMap().getPlanets();
-            Collections.shuffle(planets);
-            for (int i = 0; i < planets.size(); i++) {
-                int ownerId = (i % totalPlayers) + 1;
-                planets.get(i).setOwnerId(ownerId);
-            }
-
-            int mapWidth = game.getMap().getWidth();
-            int mapHeight = game.getMap().getHeight();
-            scale = Math.min(WINDOW_WIDTH / mapWidth, WINDOW_HEIGHT / mapHeight);
-
-            root = new Pane();
-            planetViews.clear();
-            fleetViews.clear();
-
-            for (Planet p : planets) {
-                PlanetView view = new PlanetView(p, scale, 25);
-                planetViews.add(view);
-                root.getChildren().add(view);
-
-                view.setOnMouseClicked(e -> {
-                    if (selectedSource == null && p.getOwnerId() == 1) {
-                        openShipSelectionDialog(view);
-                    } else if (selectedSource != null && p.getOwnerId() != 1) {
-                        confirmFleetDispatch(selectedSource.getPlanet(), view.getPlanet(), shipsToSend);
-                        selectedSource = null;
-                        shipsToSend = 0;
+            Button startButton = new Button("Démarrer la partie");
+            startButton.setOnAction(e -> {
+                game.clearPlayers();
+                int playerId = 1;
+                for (ComboBox<String> selector : selectors) {
+                    String choice = selector.getValue();
+                    switch (choice) {
+                        case "HUMAIN" -> game.addPlayer(new HumanPlayer(playerId++));
+                        case "IA : Dummy" -> game.addPlayer(new DummyPlayer(playerId++));
+                        case "IA : Greedy" -> game.addPlayer(new GreedyPlayer(playerId++));
+                        case "IA : Smart" -> game.addPlayer(new SmartPlayer(playerId++));
+                        default -> {} // AUCUN ou non sélectionné
                     }
-                });
-            }
-
-            Button nextTurn = new Button("Tour suivant");
-            nextTurn.setLayoutX(10);
-            nextTurn.setLayoutY(10);
-            nextTurn.setOnAction(e -> {
-                game.nextTurn();
-                game.eliminateDefeatedPlayers();
-
-                for (PlanetView pv : planetViews) {
-                    pv.update();
                 }
-
-                updateFleetViews();
+                reassignPlanets();
+                launchGame();
             });
 
-            root.getChildren().add(nextTurn);
-
-            Scene gameScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-            primaryStage.setScene(gameScene);
-            primaryStage.setTitle("Partie en cours");
+            assignMenu.getChildren().add(startButton);
+            primaryStage.setScene(new Scene(assignMenu, WINDOW_WIDTH, WINDOW_HEIGHT));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void reassignPlanets() {
+        List<Planet> planets = game.getMap().getPlanets();
+        int totalPlayers = game.getPlayers().size();
+        Collections.shuffle(planets);
+        for (int i = 0; i < planets.size(); i++) {
+            int ownerId = (i % totalPlayers) + 1;
+            planets.get(i).setOwnerId(ownerId);
+        }
+    }
+
+    private void launchGame() {
+        List<Planet> planets = game.getMap().getPlanets();
+        int mapWidth = game.getMap().getWidth();
+        int mapHeight = game.getMap().getHeight();
+        scale = Math.min(WINDOW_WIDTH / mapWidth, WINDOW_HEIGHT / mapHeight);
+
+        root = new Pane();
+        planetViews.clear();
+        fleetViews.clear();
+
+        for (Planet p : planets) {
+            PlanetView view = new PlanetView(p, scale, 25);
+            planetViews.add(view);
+            root.getChildren().add(view);
+
+            view.setOnMouseClicked(e -> {
+                if (selectedSource == null && p.getOwnerId() == 1) {
+                    openShipSelectionDialog(view);
+                } else if (selectedSource != null && p.getOwnerId() != 1) {
+                    confirmFleetDispatch(selectedSource.getPlanet(), view.getPlanet(), shipsToSend);
+                    selectedSource = null;
+                    shipsToSend = 0;
+                }
+            });
+        }
+
+        Button nextTurn = new Button("Tour suivant");
+        nextTurn.setLayoutX(10);
+        nextTurn.setLayoutY(10);
+        nextTurn.setOnAction(e -> {
+            game.nextTurn();
+            game.eliminateDefeatedPlayers();
+
+            for (PlanetView pv : planetViews) {
+                pv.update();
+            }
+
+            updateFleetViews();
+        });
+
+        root.getChildren().add(nextTurn);
+
+        Scene gameScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+        primaryStage.setScene(gameScene);
+        primaryStage.setTitle("Partie en cours");
     }
 
 

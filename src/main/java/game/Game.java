@@ -99,6 +99,17 @@ public class Game {
         return alive <= 1;
     }
 
+    public int getMaxPlayerId() {
+        int max = 0;
+        for (Planet p : map.getPlanets()) {
+            if (p.getOwnerId() > max) {
+                max = p.getOwnerId();
+            }
+        }
+        return max;
+    }
+
+
 
     /**
      * Retourne le joueur encore en vie (non éliminé), s’il y en a un.

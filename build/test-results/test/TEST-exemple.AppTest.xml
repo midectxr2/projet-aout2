@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="exemple.AppTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-07-29T11:28:11.472Z" hostname="DESKTOP-6SLI5RE" time="0.773">
+<testsuite name="exemple.AppTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-07-29T13:29:28.722Z" hostname="DESKTOP-6SLI5RE" time="0.785">
   <properties/>
-  <testcase name="smokeTest()" classname="exemple.AppTest" time="0.015"/>
-  <testcase name="deepThoughtTest()" classname="exemple.AppTest" time="0.757"/>
+  <testcase name="smokeTest()" classname="exemple.AppTest" time="0.016"/>
+  <testcase name="deepThoughtTest()" classname="exemple.AppTest" time="0.768"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -116,6 +116,12 @@ public class Planet {
         this.ownerId = ownerId;
     }
 
+    public double distanceTo(Planet planet){
+        double dx = planet.x - this.x;
+        double dy = planet.y - this.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
 
 
 

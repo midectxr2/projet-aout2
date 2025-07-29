@@ -81,4 +81,14 @@ public class GameMap {
     public List<Fleet> getFleets() {
         return fleets;
     }
+
+    public List<Planet> getPlanetsOwnedBy(int id) {
+        List<Planet> res = new ArrayList<>();
+        for (Planet p : planets) {
+            if (p.getId() == id) {
+                res.add(p);
+            }
+        }
+        return res;
+    }
 }
