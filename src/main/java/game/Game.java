@@ -1,5 +1,6 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
 public class Game {
     private double fleetSpeed = 1.0;
     private GameMap map;
-    private List<Player> players;
+    private List<Player> players = new ArrayList<>();
     private int currentTurn;
 
     /**
@@ -126,6 +127,16 @@ public class Game {
             }
         }
     }
+
+    public void clearPlayers() {
+        players.clear();
+    }
+
+    public void addPlayer(Player p) {
+        players.add(p);
+    }
+
+
 
 
 

@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -72,7 +73,20 @@ public class GameGUI extends Application {
             game = GameLoader.loadGameFromFile("src/main/resources/" + filename);
             game.setFleetSpeed(fleetSpeed);
 
+            // Crée les joueurs
+            game.clearPlayers();
+            game.addPlayer(new HumanPlayer(1));
+            for (int i = 2; i <= totalPlayers; i++) {
+                game.addPlayer(new GreedyPlayer(i));
+            }
 
+            // Répartit aléatoirement les planètes entre les joueurs
+            List<Planet> planets = game.getMap().getPlanets();
+            Collections.shuffle(planets);
+            for (int i = 0; i < planets.size(); i++) {
+                int ownerId = (i % totalPlayers) + 1;
+                planets.get(i).setOwnerId(ownerId);
+            }
 
             int mapWidth = game.getMap().getWidth();
             int mapHeight = game.getMap().getHeight();
@@ -82,7 +96,7 @@ public class GameGUI extends Application {
             planetViews.clear();
             fleetViews.clear();
 
-            for (Planet p : game.getMap().getPlanets()) {
+            for (Planet p : planets) {
                 PlanetView view = new PlanetView(p, scale, 25);
                 planetViews.add(view);
                 root.getChildren().add(view);
@@ -158,9 +172,9 @@ public class GameGUI extends Application {
 
         Dialog<Integer> dialog = new Dialog<>();
         dialog.setTitle("Envoyer des vaisseaux");
-        dialog.setHeaderText("Planète " + source.getId());
+        dialog.setHeaderText("Planete " + source.getId());
 
-        Label label = new Label("Nombre de vaisseaux à envoyer (max: " + (int) source.getShips() + "):");
+        Label label = new Label("Nombre de vaisseaux a envoyer (max: " + (int) source.getShips() + "):");
         Spinner<Integer> spinner = new Spinner<>(1, (int) source.getShips(), 1);
 
         VBox content = new VBox(10, label, spinner);
@@ -191,8 +205,8 @@ public class GameGUI extends Application {
             root.getChildren().add(fleetView);
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Flotte envoyée");
-            alert.setContentText("Vous avez envoyé " + ships + " vaisseaux vers la planète " + target.getId());
+            alert.setHeaderText("Flotte envoyee");
+            alert.setContentText("Vous avez envoye " + ships + " vaisseaux vers la planete " + target.getId());
             alert.showAndWait();
         }
     }
@@ -200,7 +214,7 @@ public class GameGUI extends Application {
     private void updateFleetViews() {
         List<Fleet> fleets = game.getMap().getFleets();
 
-        // Ajout des nouvelles FleetView manquantes
+
         for (Fleet f : fleets) {
             boolean alreadyPresent = fleetViews.stream().anyMatch(fv -> fv.getFleet() == f);
             if (!alreadyPresent) {
@@ -210,11 +224,11 @@ public class GameGUI extends Application {
             }
         }
 
-        // Suppression des FleetView terminées
+
         fleetViews.removeIf(view -> !fleets.contains(view.getFleet()));
         root.getChildren().removeIf(node -> node instanceof FleetView && !fleets.contains(((FleetView) node).getFleet()));
 
-        // Mise à jour des positions
+        // Maj pos
         for (FleetView fv : fleetViews) {
             fv.update();
         }

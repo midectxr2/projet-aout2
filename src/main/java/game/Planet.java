@@ -112,6 +112,12 @@ public class Planet {
         receiveFleet(fleet.getOwnerId(), (int) fleet.getShips());
     }
 
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
+    }
+
+
+
 
 
 

@@ -70,7 +70,7 @@ public class HumanPlayer extends Player {
             System.out.print("Combien de vaisseaux envoyer ? (max " + (int) source.getShips() + ") : ");
             nb = 0;
             if (nb > 0 && nb < source.getShips()) break;
-            System.out.println("Quantité invalide. Réessayez.");
+            System.out.println("Quantite invalide. Réessayez.");
         }
 
         source.removeShips(nb);
