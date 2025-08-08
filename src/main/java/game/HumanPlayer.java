@@ -74,7 +74,7 @@ public class HumanPlayer extends Player {
         }
 
         source.removeShips(nb);
-        Fleet fleet = new Fleet(source, target, id, nb);
-        game.getMap().addFleet(fleet);
+        //Fleet fleet = new Fleet(source, target, id, nb);
+        //game.getMap().addFleet(fleet);
     }
 }

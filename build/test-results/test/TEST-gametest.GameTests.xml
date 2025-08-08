@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="gametest.GameTests" tests="10" skipped="0" failures="0" errors="0" timestamp="2025-08-01T17:39:11.406Z" hostname="DESKTOP-6SLI5RE" time="0.019">
+<testsuite name="gametest.GameTests" tests="10" skipped="0" failures="0" errors="0" timestamp="2025-08-08T11:22:24.004Z" hostname="DESKTOP-43J0CUE" time="0.015">
   <properties/>
-  <testcase name="testAjoutVaisseauxMemeJoueur()" classname="gametest.GameTests" time="0.002"/>
-  <testcase name="testSuppressionFlottesJoueur()" classname="gametest.GameTests" time="0.003"/>
-  <testcase name="testAvancementFlotte()" classname="gametest.GameTests" time="0.0"/>
-  <testcase name="testDefaiteAttaquant()" classname="gametest.GameTests" time="0.001"/>
+  <testcase name="testAjoutVaisseauxMemeJoueur()" classname="gametest.GameTests" time="0.001"/>
+  <testcase name="testSuppressionFlottesJoueur()" classname="gametest.GameTests" time="0.002"/>
+  <testcase name="testAvancementFlotte()" classname="gametest.GameTests" time="0.001"/>
+  <testcase name="testDefaiteAttaquant()" classname="gametest.GameTests" time="0.0"/>
   <testcase name="testFlotteNePeutPasViderPlanete()" classname="gametest.GameTests" time="0.001"/>
-  <testcase name="testCaptureParAutreJoueur()" classname="gametest.GameTests" time="0.001"/>
+  <testcase name="testCaptureParAutreJoueur()" classname="gametest.GameTests" time="0.0"/>
   <testcase name="testArriveeFlotteAppliqueEffets()" classname="gametest.GameTests" time="0.0"/>
-  <testcase name="testPasDeCroissanceSiNeutre()" classname="gametest.GameTests" time="0.002"/>
-  <testcase name="testCroissancePlanete()" classname="gametest.GameTests" time="0.001"/>
-  <testcase name="testNeutralisationParEgalite()" classname="gametest.GameTests" time="0.0"/>
+  <testcase name="testPasDeCroissanceSiNeutre()" classname="gametest.GameTests" time="0.001"/>
+  <testcase name="testCroissancePlanete()" classname="gametest.GameTests" time="0.0"/>
+  <testcase name="testNeutralisationParEgalite()" classname="gametest.GameTests" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

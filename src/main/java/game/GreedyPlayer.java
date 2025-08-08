@@ -7,6 +7,7 @@ import java.util.List;
  * Elle envoie la moitié de ses vaisseaux disponibles vers la planète la plus proche non possédée.
  */
 public class GreedyPlayer extends Player {
+    int fleetId;
 
     public GreedyPlayer(int id) {
         super(id);
@@ -40,7 +41,8 @@ public class GreedyPlayer extends Player {
             if (closest != null) {
                 int shipsToSend = (int) (source.getShips() * 0.5);
                 source.removeShips(shipsToSend);
-                Fleet fleet = new Fleet(source, closest, this.getId(), shipsToSend);
+                Fleet fleet = new Fleet(fleetId ,source, closest, this.getId(), shipsToSend);
+                fleetId = fleetId + 1;
                 game.getMap().addFleet(fleet);
             }
         }

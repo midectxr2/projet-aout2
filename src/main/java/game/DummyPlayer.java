@@ -8,6 +8,7 @@ import java.util.Random;
  */
 public class DummyPlayer extends Player {
     private Random rand = new Random();
+    private int fleetId;
 
     public DummyPlayer(int id) {
         super(id);
@@ -24,7 +25,8 @@ public class DummyPlayer extends Player {
                 if (target != source) {
                     int shipsToSend = (int) (source.getShips() * 0.5);
                     source.removeShips(shipsToSend);
-                    Fleet fleet = new Fleet(source, target, id, shipsToSend);
+                    Fleet fleet = new Fleet(fleetId, source, target, id, shipsToSend);
+                    fleetId = fleetId + 1;
                     game.getMap().addFleet(fleet);
                 }
             }

@@ -99,15 +99,6 @@ public class Game {
         return alive <= 1;
     }
 
-    public int getMaxPlayerId() {
-        int max = 0;
-        for (Planet p : map.getPlanets()) {
-            if (p.getOwnerId() > max) {
-                max = p.getOwnerId();
-            }
-        }
-        return max;
-    }
 
 
 
@@ -146,6 +137,13 @@ public class Game {
     public void addPlayer(Player p) {
         players.add(p);
     }
+
+
+    public void cancelFleet(Player p){
+     map.removeFleetsByPlayer(p.getId());
+    }
+
+
 
 
 

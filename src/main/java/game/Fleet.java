@@ -5,6 +5,7 @@ package game;
  * Une flotte avance à chaque tour selon une vitesse donnée, et applique son effet en arrivant à destination.
  */
 public class Fleet {
+    private int Id;
     private Planet source;
     private Planet target;
     private int ownerId;
@@ -12,6 +13,8 @@ public class Fleet {
     private double x, y;
     private double dx, dy;
     private double distanceRemaining;
+
+
 
     /**
      * Crée une flotte à partir d'une planète source et à destination d'une planète cible.
@@ -22,7 +25,8 @@ public class Fleet {
      * @param ownerId   l'identifiant du joueur propriétaire de la flotte
      * @param ships     le nombre de vaisseaux transportés
      */
-    public Fleet(Planet source, Planet target, int ownerId, double ships) {
+    public Fleet(int Id, Planet source, Planet target, int ownerId, double ships) {
+        this.Id = Id;
         this.source = source;
         this.target = target;
         this.ownerId = ownerId;
@@ -75,7 +79,7 @@ public class Fleet {
     public Planet getTarget() { return target; }
     public int getOwnerId() { return ownerId; }
     public double getShips() { return ships; }
-
+    public int getId() {return Id;}
 
     /**
      * Calcule la distance euclidienne entre deux points (x1, y1) et (x2, y2).

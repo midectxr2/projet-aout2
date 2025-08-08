@@ -2,14 +2,21 @@ package game.gui;
 
 import game.*;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 import java.io.IOException;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +38,8 @@ public class GameGUI extends Application {
     private int shipsToSend = 0;
     private Pane root;
     private int scale;
+    private int id;
+
 
     @Override
     public void start(Stage stage) {
@@ -64,7 +73,7 @@ public class GameGUI extends Application {
 
     private void showPlayerAssignmentMenu() {
         try {
-            game = GameLoader.loadGameFromFile("src/main/resources/map_1v1.txt");
+            game = GameLoader.loadGameFromFile("src/main/resources/map.txt");
             game.setFleetSpeed(fleetSpeed);
 
             VBox assignMenu = new VBox(10);
@@ -78,7 +87,9 @@ public class GameGUI extends Application {
             for (int i = 1; i <= maxPlayers; i++) {
                 Label label = new Label("Joueur " + i);
                 ComboBox<String> selector = new ComboBox<>();
-                selector.getItems().addAll("AUCUN", "HUMAIN", "IA : Dummy", "IA : Greedy", "IA : Smart");
+
+                //suppression de la possibilité de choisir un autre humain dans la partie
+                selector.getItems().addAll("AUCUN", "IA : Dummy", "IA : Greedy", "IA : Smart");
                 if (i == 1) selector.setValue("HUMAIN");
                 else if (i <= basePlayers) selector.setValue("IA : Greedy");
                 else selector.setValue("AUCUN");
@@ -122,6 +133,7 @@ public class GameGUI extends Application {
     }
 
     private void launchGame() {
+        System.out.println(fleetSpeed);
         List<Planet> planets = game.getMap().getPlanets();
         int mapWidth = game.getMap().getWidth();
         int mapHeight = game.getMap().getHeight();
@@ -130,6 +142,7 @@ public class GameGUI extends Application {
         root = new Pane();
         planetViews.clear();
         fleetViews.clear();
+
 
         for (Planet p : planets) {
             PlanetView view = new PlanetView(p, scale, 25);
@@ -147,22 +160,36 @@ public class GameGUI extends Application {
             });
         }
 
+        Button cancelAllFleetsBtn = new Button("Annuler toutes mes flottes");
+        cancelAllFleetsBtn.setLayoutX(10);
+        cancelAllFleetsBtn.setLayoutY(40);
+        cancelAllFleetsBtn.setOnAction(e -> {
+            //dans tout les cas dans la liste de joueur le joueur indice 0 sera le joueur humain
+            game.cancelFleet(game.getPlayers().get(0));
+        });
+
         Button nextTurn = new Button("Tour suivant");
         nextTurn.setLayoutX(10);
         nextTurn.setLayoutY(10);
         nextTurn.setOnAction(e -> {
             game.nextTurn();
             game.eliminateDefeatedPlayers();
-            boolean gameOver = game.isGameOver();
+
 
             for (PlanetView pv : planetViews) {
                 pv.update();
             }
 
             updateFleetViews();
+
+            if(game.isGameOver()){
+                Player winner = game.getWinner();
+                showGameOverScreenModal(root.getScene().getWindow(), winner);
+
+            }
         });
 
-        root.getChildren().add(nextTurn);
+        root.getChildren().addAll(nextTurn, cancelAllFleetsBtn);
 
         Scene gameScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setScene(gameScene);
@@ -178,7 +205,7 @@ public class GameGUI extends Application {
         Label label = new Label("Vitesse des flottes :");
         label.setStyle("-fx-text-fill: white;");
 
-        Slider speedSlider = new Slider(0.5, 10, fleetSpeed);
+        Slider speedSlider = new Slider(0.5, 5, fleetSpeed);
         speedSlider.setShowTickLabels(true);
         speedSlider.setShowTickMarks(true);
         speedSlider.setMajorTickUnit(1);
@@ -230,7 +257,8 @@ public class GameGUI extends Application {
     private void confirmFleetDispatch(Planet source, Planet target, int ships) {
         if (ships > 0 && source.getShips() >= ships) {
             source.removeShips(ships);
-            Fleet fleet = new Fleet(source, target, 1, ships);
+            id = id + 1;
+            Fleet fleet = new Fleet(id, source, target, 1, ships);
             game.getMap().addFleet(fleet);
 
             FleetView fleetView = new FleetView(fleet, scale);
@@ -265,5 +293,43 @@ public class GameGUI extends Application {
         for (FleetView fv : fleetViews) {
             fv.update();
         }
+    }
+    private void showGameOverScreenModal(Window owner, Player winner) {
+        VBox content = new VBox(12);
+        content.setAlignment(Pos.CENTER);
+        content.setPadding(new Insets(20));
+
+        Label title = new Label("Partie terminee");
+        title.setStyle("-fx-font-size: 22; -fx-font-weight: bold;");
+
+        Label winnerLbl = new Label("Vainqueur : " + (winner != null ? winner.getId() : "—"));
+
+        Button replayBtn = new Button("Rejouer");
+        Button menuBtn   = new Button("Menu principal");
+        Button quitBtn   = new Button("Quitter");
+        HBox buttons = new HBox(10, replayBtn, menuBtn, quitBtn);
+        buttons.setAlignment(Pos.CENTER);
+
+        content.getChildren().addAll(title, winnerLbl, buttons);
+
+
+        //ChatGPT
+        Stage dlg = new Stage(StageStyle.DECORATED);
+        dlg.initModality(Modality.APPLICATION_MODAL);
+        if (owner != null) dlg.initOwner(owner);
+        dlg.setTitle("Fin de partie");
+        dlg.setScene(new Scene(content));
+
+        replayBtn.setOnAction(e -> {
+            dlg.close();
+            showPlayerAssignmentMenu();
+        });
+        menuBtn.setOnAction(e -> {
+            dlg.close();
+           showMainMenu();
+        });
+        quitBtn.setOnAction(e -> Platform.exit());
+
+        dlg.showAndWait();
     }
 }
