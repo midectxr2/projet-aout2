@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="exemple.AppTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-08-08T11:22:23.223Z" hostname="DESKTOP-43J0CUE" time="0.774">
-  <properties/>
-  <testcase name="smokeTest()" classname="exemple.AppTest" time="0.012"/>
-  <testcase name="deepThoughtTest()" classname="exemple.AppTest" time="0.761"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

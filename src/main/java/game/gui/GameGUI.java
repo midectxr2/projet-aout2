@@ -22,7 +22,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Interface graphique avec menu principal : jouer, configurer ou quitter.
+ * Interface graphique principale du jeu avec menu, configuration,
+ * affectation des joueurs et affichage de la partie en cours.
+ *
+ * Elle gère le cycle de jeu du joueur humain, l’affichage des planètes
+ * et des flottes, ainsi que les interactions utilisateur.
  */
 public class GameGUI extends Application {
 
@@ -42,12 +46,22 @@ public class GameGUI extends Application {
     private int id;
 
 
+
+    /**
+     * Point d’entrée JavaFX.
+     *
+     * @param stage fenêtre principale
+     */
     @Override
     public void start(Stage stage) {
         this.primaryStage = stage;
         showMainMenu();
     }
 
+
+    /**
+     * Affiche le menu principal avec les options
+     */
     private void showMainMenu() {
         VBox menu = new VBox(20);
         menu.setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -72,6 +86,14 @@ public class GameGUI extends Application {
         primaryStage.show();
     }
 
+
+
+    /**
+     * Affiche l’écran permettant d’assigner un type à chaque joueur
+     * (Humain ou IA avec différents comportements).
+     *
+     * Charge également la carte depuis un fichier.
+     */
     private void showPlayerAssignmentMenu() {
         try {
             game = GameLoader.loadGameFromFile("src/main/resources/map.txt");
@@ -123,6 +145,10 @@ public class GameGUI extends Application {
         }
     }
 
+
+    /**
+     * Réattribue aléatoirement les planètes aux joueurs actifs.
+     */
     private void reassignPlanets() {
         List<Planet> planets = game.getMap().getPlanets();
         int totalPlayers = game.getPlayers().size();
@@ -133,6 +159,11 @@ public class GameGUI extends Application {
         }
     }
 
+
+    /**
+     * Lance la partie après configuration des joueurs et de la carte.
+     * Initialise l’affichage des planètes et des boutons d’action.
+     */
     private void launchGame() {
         System.out.println(fleetSpeed);
         List<Planet> planets = game.getMap().getPlanets();
@@ -161,6 +192,9 @@ public class GameGUI extends Application {
             });
         }
 
+
+
+        //Bouton cancel flottes
         Button cancelAllFleetsBtn = new Button("Annuler toutes mes flottes");
         cancelAllFleetsBtn.setLayoutX(10);
         cancelAllFleetsBtn.setLayoutY(40);
@@ -170,6 +204,8 @@ public class GameGUI extends Application {
             updateFleetViews();
         });
 
+
+        //Bouton tour suivant
         Button nextTurn = new Button("Tour suivant");
         nextTurn.setLayoutX(10);
         nextTurn.setLayoutY(10);
@@ -199,6 +235,10 @@ public class GameGUI extends Application {
     }
 
 
+
+    /**
+     * Affiche le menu de configuration de la vitesse des flottes.
+     */
     private void showConfigMenu() {
         VBox config = new VBox(15);
         config.setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -228,6 +268,13 @@ public class GameGUI extends Application {
         primaryStage.setTitle("Configuration");
     }
 
+
+    /**
+     * Ouvre une boîte de dialogue permettant de choisir le nombre de vaisseaux
+     * à envoyer depuis une planète source.
+     *
+     * @param view vue de la planète source
+     */
     private void openShipSelectionDialog(PlanetView view) {
         selectedSource = view;
         Planet source = view.getPlanet();
@@ -256,6 +303,11 @@ public class GameGUI extends Application {
         dialog.showAndWait().ifPresent(val -> shipsToSend = val);
     }
 
+    /**
+     * Ouvre une boîte de confirmation pour supprimer une flotte sélectionnée.
+     *
+     * @param view vue de la flotte à supprimer
+     */
     private void openFleetSelectionDialog(FleetView view){
         Fleet source = view.getFleet();
 
@@ -279,7 +331,13 @@ public class GameGUI extends Application {
     }
 
 
-    //on peut faire autre chose avant de selectionnez la planete cible !!!! à regler
+    /**
+     * Confirme et exécute l'envoi d'une flotte entre deux planètes.
+     *
+     * @param source planète source
+     * @param target planète cible
+     * @param ships  nombre de vaisseaux à envoyer
+     */
     private void confirmFleetDispatch(Planet source, Planet target, int ships) {
         if (ships > 0 && source.getShips() >= ships) {
             source.removeShips(ships);
@@ -304,6 +362,10 @@ public class GameGUI extends Application {
         }
     }
 
+
+    /**
+     * Met à jour la liste des flottes affichées et leur position graphique.
+     */
     private void updateFleetViews() {
         List<Fleet> fleets = game.getMap().getFleets();
 
@@ -316,8 +378,6 @@ public class GameGUI extends Application {
                 root.getChildren().add(newView);
             }
         }
-
-
         fleetViews.removeIf(view -> !fleets.contains(view.getFleet()));
         root.getChildren().removeIf(node -> node instanceof FleetView && !fleets.contains(((FleetView) node).getFleet()));
 
@@ -326,6 +386,15 @@ public class GameGUI extends Application {
             fv.update();
         }
     }
+
+
+    /**
+     * Affiche un écran modal de fin de partie avec le nom du vainqueur
+     * et les options pour rejouer, retourner au menu ou quitter.
+     *
+     * @param owner  fenêtre parente
+     * @param winner joueur vainqueur
+     */
     private void showGameOverScreenModal(Window owner, Player winner) {
         VBox content = new VBox(12);
         content.setAlignment(Pos.CENTER);

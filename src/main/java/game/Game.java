@@ -20,6 +20,8 @@ public class Game {
         this.fleetSpeed = speed;
     }
 
+
+
     /**
      * Initialise une nouvelle partie.
      * @param map la carte du jeu
@@ -32,6 +34,8 @@ public class Game {
         updateOwnerships();
 
     }
+
+
 
     /**
      * Avance d'un tour dans la partie :
@@ -56,6 +60,8 @@ public class Game {
         updateOwnerships();
     }
 
+
+
     /**
      * Met à jour la liste des planètes possédées par chaque joueur.
      * Doit être appelée après chaque changement de propriété planétaire.
@@ -71,6 +77,7 @@ public class Game {
             }
         }
     }
+
 
     public GameMap getMap() {
         return map;
@@ -129,6 +136,7 @@ public class Game {
             }
         }
     }
+
 
     public void clearPlayers() {
         players.clear();

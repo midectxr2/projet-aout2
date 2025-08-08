@@ -16,21 +16,16 @@ public class SmartPlayer extends Player {
         super(id);
     }
 
+    //Algorithme détaillé dans le rapport
     @Override
     public void playTurn(Game game) {
         List<Planet> myPlanets = this.getOwnedPlanets();
         
         List<Planet> allPlanets = game.getMap().getPlanets();
 
-
-
         for (Planet source : myPlanets) {
 
-
-
-
             if (source.getShips() < ATTACK_THRESHOLD) continue;
-
 
             Planet bestTarget = null;
             double bestDistance = Double.MAX_VALUE;

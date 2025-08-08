@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests unitaires pour vérifier la logique de gestion de vaisseaux et d'arrivée de flotte.
+ * Tests unitaires.
  */
 public class GameTests {
 
@@ -64,7 +64,7 @@ public class GameTests {
     @Test
     public void testFlotteNePeutPasViderPlanete() {
         Planet source = new Planet(1,1, 1, 1.0, 1.0, 1, 10);
-        Fleet f = new Fleet(source, p, 1, 10);
+        Fleet f = new Fleet(1,source, p, 1, 10);
         assertFalse(f.getShips() < source.getShips());
     }
 
@@ -75,7 +75,7 @@ public class GameTests {
     public void testAvancementFlotte() {
         Planet source = new Planet(1,0, 0, 1, 1, 1, 10);
         Planet target = new Planet(2,3, 4, 1, 1, 2, 5); // distance = 5
-        Fleet f = new Fleet(source, target, 1, 5);
+        Fleet f = new Fleet(1,source, target, 1, 5);
         f.advance(2);
         //distance = 5 -> direction: (0.6,0.8), donc position après 2 tours: (1.2, 1.8).
         //Voir graphe dans le rapport.
@@ -89,7 +89,7 @@ public class GameTests {
     @Test
     public void testArriveeFlotteAppliqueEffets() {
         Planet cible = new Planet(2, 5, 5, 1, 1, 2, 3);
-        Fleet f = new Fleet(p, cible, 1, 10);
+        Fleet f = new Fleet(1, p, cible, 1, 10);
         f.advance(100);
         assertTrue(f.hasArrived());
         f.applyArrival();
@@ -129,8 +129,8 @@ public class GameTests {
         GameMap map = new GameMap();
         Planet a = new Planet(1,0, 0, 1, 1, 1, 10);
         Planet b = new Planet(1, 1, 1, 1, 1, 2, 10);
-        map.addFleet(new Fleet(a, b, 1, 5));
-        map.addFleet(new Fleet(b, a, 2, 5));
+        map.addFleet(new Fleet(1,a, b, 1, 5));
+        map.addFleet(new Fleet(1,b, a, 2, 5));
         map.removeFleetsByPlayer(1);
         assertEquals(1, map.getFleets().size());
         assertEquals(2, map.getFleets().get(0).getOwnerId());

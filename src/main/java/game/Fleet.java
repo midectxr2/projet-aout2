@@ -72,6 +72,8 @@ public class Fleet {
         target.receiveFleet(this);
     }
 
+
+
     //getters
     public double getX() { return x; }
     public double getY() { return y; }
@@ -80,6 +82,8 @@ public class Fleet {
     public int getOwnerId() { return ownerId; }
     public double getShips() { return ships; }
     public int getId() {return Id;}
+
+
 
     /**
      * Calcule la distance euclidienne entre deux points (x1, y1) et (x2, y2).
