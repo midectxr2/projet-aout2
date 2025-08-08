@@ -35,6 +35,7 @@ public class GameGUI extends Application {
 
     private Game game;
     private PlanetView selectedSource = null;
+    private FleetView selectedFleet = null;
     private int shipsToSend = 0;
     private Pane root;
     private int scale;
@@ -254,6 +255,28 @@ public class GameGUI extends Application {
         dialog.showAndWait().ifPresent(val -> shipsToSend = val);
     }
 
+    private void openFleetSelectionDialog(FleetView view){
+        Fleet source = view.getFleet();
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Supprimer la flotte ?");
+        alert.setHeaderText("Flotte " + source.getId());
+        alert.setContentText("Voulez-vous vraiment supprimer cette flotte ?");
+
+
+        ButtonType confirmButton = new ButtonType("Confirmer", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton  = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(confirmButton, cancelButton);
+
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == confirmButton) {
+                game.getMap().removeFleetsById(source.getId());
+                updateFleetViews();
+                }
+        });
+    }
+
     private void confirmFleetDispatch(Planet source, Planet target, int ships) {
         if (ships > 0 && source.getShips() >= ships) {
             source.removeShips(ships);
@@ -264,6 +287,12 @@ public class GameGUI extends Application {
             FleetView fleetView = new FleetView(fleet, scale);
             fleetViews.add(fleetView);
             root.getChildren().add(fleetView);
+
+            fleetView.setOnMouseClicked(e -> {
+                if (selectedSource == null && fleet.getOwnerId() == 1) {
+                    openFleetSelectionDialog(fleetView);
+                }
+                });
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Flotte envoyee");
