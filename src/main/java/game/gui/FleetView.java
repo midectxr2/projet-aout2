@@ -3,6 +3,7 @@ package game.gui;
 import game.Fleet;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 
 /**
  * Représentation graphique d'une flotte en déplacement.

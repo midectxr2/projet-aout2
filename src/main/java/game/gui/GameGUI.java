@@ -153,7 +153,7 @@ public class GameGUI extends Application {
             view.setOnMouseClicked(e -> {
                 if (selectedSource == null && p.getOwnerId() == 1) {
                     openShipSelectionDialog(view);
-                } else if (selectedSource != null && p.getOwnerId() != 1) {
+                } else if (selectedSource != null && selectedSource.getPlanet().getId() != p.getId()) {
                     confirmFleetDispatch(selectedSource.getPlanet(), view.getPlanet(), shipsToSend);
                     selectedSource = null;
                     shipsToSend = 0;
@@ -167,6 +167,7 @@ public class GameGUI extends Application {
         cancelAllFleetsBtn.setOnAction(e -> {
             //dans tout les cas dans la liste de joueur le joueur indice 0 sera le joueur humain
             game.cancelFleet(game.getPlayers().get(0));
+            updateFleetViews();
         });
 
         Button nextTurn = new Button("Tour suivant");
@@ -277,6 +278,8 @@ public class GameGUI extends Application {
         });
     }
 
+
+    //on peut faire autre chose avant de selectionnez la planete cible !!!! à regler
     private void confirmFleetDispatch(Planet source, Planet target, int ships) {
         if (ships > 0 && source.getShips() >= ships) {
             source.removeShips(ships);
