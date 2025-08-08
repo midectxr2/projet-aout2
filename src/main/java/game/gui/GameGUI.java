@@ -43,7 +43,7 @@ public class GameGUI extends Application {
         menu.setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         menu.setStyle("-fx-alignment: center; -fx-background-color: black;");
 
-        Label title = new Label("Carte chargée. Sélectionnez les types de joueurs :");
+        Label title = new Label("Carte chargee. Selectionnez les types de joueurs :");
         title.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
 
         Button playButton = new Button("Lancer la partie");
@@ -153,6 +153,7 @@ public class GameGUI extends Application {
         nextTurn.setOnAction(e -> {
             game.nextTurn();
             game.eliminateDefeatedPlayers();
+            boolean gameOver = game.isGameOver();
 
             for (PlanetView pv : planetViews) {
                 pv.update();

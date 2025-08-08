@@ -7,8 +7,8 @@ import java.util.List;
  */
 public class SmartPlayer extends Player {
 
-    private static final int ATTACK_THRESHOLD = 20; // minimum de vaisseaux pour attaquer
-    private static final double ATTACK_RATIO = 1.5;  // doit avoir 1.5x plus de vaisseaux que la cible
+    private static final int ATTACK_THRESHOLD = 1; // minimum de vaisseaux pour attaquer
+    private static final double ATTACK_RATIO = 1;  // doit avoir 1.5x plus de vaisseaux que la cible
 
     public SmartPlayer(int id) {
         super(id);
@@ -16,16 +16,25 @@ public class SmartPlayer extends Player {
 
     @Override
     public void playTurn(Game game) {
-        List<Planet> myPlanets = game.getMap().getPlanetsOwnedBy(id);
+        List<Planet> myPlanets = this.getOwnedPlanets();
+        
         List<Planet> allPlanets = game.getMap().getPlanets();
 
+
+
         for (Planet source : myPlanets) {
+
+
+
+
             if (source.getShips() < ATTACK_THRESHOLD) continue;
+
 
             Planet bestTarget = null;
             double bestDistance = Double.MAX_VALUE;
 
             for (Planet p : allPlanets) {
+                System.out.println(p.getId());
                 if (p.getOwnerId() == id) continue;
                 if (source.getShips() <= p.getShips() * ATTACK_RATIO) continue;
 
