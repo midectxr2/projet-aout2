@@ -1,45 +1,63 @@
 package game.gui;
 
 import game.Fleet;
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 /**
  * Représentation graphique d'une flotte en déplacement sur la carte.
- * Cette vue est un cercle coloré, dont la couleur dépend du joueur propriétaire.
- * La position du cercle est mise à jour à partir des coordonnées actuelles de l'objet.
+ * Affiche un point coloré + le nombre de vaisseaux sous la flotte.
  */
-public class FleetView extends Circle {
+public class FleetView extends Group {
 
     private final Fleet fleet;
     private final int scale;
 
+    private final Circle dot;
+    private final Text shipsText;
 
     /**
-     * Construit la vue graphique d'une flotte.
-     *
      * @param fleet flotte associée à cette vue
-     * @param scale facteur d'échelle pour le positionnement (doit être positif)
+     * @param scale facteur d'échelle
      */
     public FleetView(Fleet fleet, int scale) {
+
         this.fleet = fleet;
         this.scale = scale;
 
-        setRadius(4);
-        setFill(getColorForPlayer(fleet.getOwnerId()));
-        update();
+        double cx = fleet.getX() * scale;
+        double cy = fleet.getY() * scale;
+
+        dot = new Circle(cx, cy, 4);
+        dot.setFill(getColorForPlayer(fleet.getOwnerId()));
+
+        shipsText = new Text(cx, cy + 12, String.valueOf((int) Math.round(fleet.getShips())));
+        shipsText.setFont(Font.font(11));
+        shipsText.setFill(Color.BLACK);
+
+
+        getChildren().addAll(dot, shipsText);
+        // on clique sur les enfants, pas sur le bounding box vide
+        setPickOnBounds(false);
     }
 
 
 
-    /**
-     * Met à jour la position graphique de la flotte en fonction
-     * de ses coordonnées actuelles dans le modèle
-     */
+    /** Met à jour la position + couleur + valeur affichée. */
     public void update() {
-        setCenterX(fleet.getX() * scale);
-        setCenterY(fleet.getY() * scale);
+        double cx = fleet.getX() * scale;
+        double cy = fleet.getY() * scale;
+
+        dot.setCenterX(cx);
+        dot.setCenterY(cy);
+        dot.setFill(getColorForPlayer(fleet.getOwnerId()));
+
+        shipsText.setX(cx);
+        shipsText.setY(cy + 12);
+        shipsText.setText(String.valueOf((int) Math.round(fleet.getShips())));
     }
 
 
