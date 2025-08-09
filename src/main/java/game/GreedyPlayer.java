@@ -13,6 +13,8 @@ public class GreedyPlayer extends Player {
         super(id);
     }
 
+
+    //Algorithme dans le rapport
     @Override
     public void playTurn(Game game) {
         List<Planet> owned = getOwnedPlanets();
