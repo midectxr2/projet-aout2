@@ -16,6 +16,8 @@ public class GameLoader {
      * @return une instance de Game contenant la carte et les joueurs
      * @throws IOException en cas d'erreur de lecture
      */
+
+    //Aide de chatGPT
     public static Game loadGameFromFile(String filename) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String[] dims = br.readLine().split(" ");
@@ -30,6 +32,7 @@ public class GameLoader {
             int planetId = 0;
             String line;
             while ((line = br.readLine()) != null) {
+                //ChatGPT = tokens
                 String[] tokens = line.trim().split(" ");
                 if (tokens.length < 6) continue;
                 double x = Double.parseDouble(tokens[0]);
