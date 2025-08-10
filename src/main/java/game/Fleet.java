@@ -37,8 +37,11 @@ public class Fleet {
         double totalDistance = distance(source.getX(), source.getY(), target.getX(), target.getY());
         this.distanceRemaining = totalDistance;
 
+
         double dirX = target.getX() - source.getX();
         double dirY = target.getY() - source.getY();
+
+
         this.dx = dirX / totalDistance;
         this.dy = dirY / totalDistance;
     }
@@ -49,7 +52,9 @@ public class Fleet {
      * @param speed la distance à parcourir ce tour-ci
      */
     public void advance(double speed) {
+        //éviter de dépasser
         double step = Math.min(speed, distanceRemaining);
+
         x += dx * step;
         y += dy * step;
         distanceRemaining -= step;

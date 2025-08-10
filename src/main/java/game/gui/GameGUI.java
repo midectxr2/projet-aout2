@@ -120,7 +120,7 @@ public class GameGUI extends Application {
                 assignMenu.getChildren().addAll(label, selector);
             }
 
-            Button startButton = new Button("Démarrer la partie");
+            Button startButton = new Button("Demarrer la partie");
             startButton.setOnAction(e -> {
                 game.clearPlayers();
                 int playerId = 1;

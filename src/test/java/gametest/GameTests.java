@@ -19,7 +19,9 @@ public class GameTests {
     }
 
     /**
-     * Vérifie qu'une flotte alliée ajoute bien ses vaisseaux à la planète.
+     * Teste le cas où une flotte du même joueur arrive sur une planète.
+     * Vérifie que les vaisseaux sont ajoutés au total existant et que
+     * le propriétaire de la planète ne change pas.
      */
     @Test
     public void testAjoutVaisseauxMemeJoueur() {
@@ -29,7 +31,9 @@ public class GameTests {
     }
 
     /**
-     * Vérifie qu'une flotte ennemie plus grande capture la planète.
+     * Teste le cas où une flotte ennemie, plus nombreuse que la défense
+     * restante, capture la planète. Vérifie que le nombre de vaisseaux
+     * restants correspond à la différence et que le propriétaire change.
      */
     @Test
     public void testCaptureParAutreJoueur() {
@@ -39,7 +43,10 @@ public class GameTests {
     }
 
     /**
-     * Vérifie qu'une attaque plus faible échoue et que la défense est réduite.
+     * Teste le cas où une flotte ennemie moins nombreuse que la défense
+     * échoue à capturer la planète. Vérifie que les forces de défense
+     * restantes correspondent à la différence et que le propriétaire
+     * reste inchangé.
      */
     @Test
     public void testDefaiteAttaquant() {
@@ -49,8 +56,11 @@ public class GameTests {
     }
 
     /**
-     * Vérifie qu'en cas d'égalité, la planète devient neutre.
+     * Teste le cas où une flotte ennemie possède exactement autant
+     * de vaisseaux que la défense. Vérifie que la planète devient neutre
+     * et que le nombre de vaisseaux restants est nul.
      */
+
     @Test
     public void testNeutralisationParEgalite() {
         p.receiveFleet(2, 10);
@@ -59,7 +69,8 @@ public class GameTests {
     }
 
     /**
-     * Vérifie qu'on ne peut pas envoyer tous les vaisseaux d'une planète.
+     * Vérifie qu'une flotte ne peut pas contenir plus de vaisseaux
+     * que ceux présents sur la planète source au moment de son envoi.
      */
     @Test
     public void testFlotteNePeutPasViderPlanete() {
@@ -74,18 +85,19 @@ public class GameTests {
     @Test
     public void testAvancementFlotte() {
         Planet source = new Planet(1,0, 0, 1, 1, 1, 10);
-        Planet target = new Planet(2,3, 4, 1, 1, 2, 5); // distance = 5
+        Planet target = new Planet(2,3, 4, 1, 1, 2, 5);
         Fleet f = new Fleet(1,source, target, 1, 5);
         f.advance(2);
-        //distance = 5 -> direction: (0.6,0.8), donc position après 2 tours: (1.2, 1.8).
-        //Voir graphe dans le rapport.
-        assertEquals(1, Math.round(f.getX()));
-        assertEquals(2, Math.round(f.getY()));
+        assertEquals(1.2, f.getX());
+        assertEquals(1.6, f.getY());
     }
 
     /**
-     * Vérifie qu'une flotte arrivée applique ses effets sur la planète cible.
+     * Vérifie qu'une flotte arrivée applique correctement ses effets sur la planète cible :
+     * déplacement jusqu'à la planète, arrivée confirmée, application des effets (ajout ou conquête),
+     * et vérification du nombre final de vaisseaux ainsi que du propriétaire.
      */
+
     @Test
     public void testArriveeFlotteAppliqueEffets() {
         Planet cible = new Planet(2, 5, 5, 1, 1, 2, 3);
